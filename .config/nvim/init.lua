@@ -10,6 +10,23 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+
+-- =====================
+-- Editor options
+-- =====================
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.clipboard = "unnamedplus"
+vim.opt.termguicolors = true
+vim.opt.numberwidth = 4 
+vim.opt.signcolumn = "yes"
+
+
 require("lazy").setup({
   -- Colorscheme
   {
@@ -30,43 +47,52 @@ require("lazy").setup({
     end,
   },
 
-  -- Treesitter (syntax highlighting)
+  -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      local ok, tsconfigs = pcall(require, "nvim-treesitter.configs")
-      if not ok then
-        return
-      end
-      tsconfigs.setup({
-        ensure_installed = {
-          "javascript", "typescript", "tsx",
-          "php", "html", "css", "json"
-        },
+      -- If the .configs module is missing, this pcall handles it gracefully
+      local ok, configs = pcall(require, "nvim-treesitter.configs")
+      if not ok then return end
+      
+      configs.setup({
+        ensure_installed = { "javascript", "typescript", "tsx", "php", "html", "css", "json", "lua", "vim", "vimdoc" },
         highlight = { enable = true },
+        indent = { enable = true },
       })
     end,
   },
 
-  -- LSP installer
-  { "williamboman/mason.nvim", config = true },
-  { "williamboman/mason-lspconfig.nvim" },
-
-  -- LSP configuration
+  -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
+    },
     config = function()
-      -- Ensure servers are installed
+      -- 1. Setup Mason
+      require("mason").setup()
       require("mason-lspconfig").setup({
-        ensure_installed = { "tsserver", "phpactor", "html", "cssls" },
+        -- RENAME: tsserver is now ts_ls
+        ensure_installed = { "ts_ls", "phpactor", "html", "cssls" },
       })
 
-      local lspconfig = require("lspconfig")  -- still safe for now
-      lspconfig.ts_ls.setup({})
-      lspconfig.phpactor.setup({})
-      lspconfig.html.setup({})
-      lspconfig.cssls.setup({})
+      -- 2. Setup Servers
+      local lspconfig = require("lspconfig")
+      local servers = { "ts_ls", "phpactor", "html", "cssls" }
+      
+      for _, server in ipairs(servers) do
+        -- This check targets the Neovim 0.11+ "framework" deprecation
+        if vim.lsp.config then
+          -- The new native way
+          vim.lsp.config(server, {})
+        else
+          -- The legacy way (pre-0.11)
+          lspconfig[server].setup({})
+        end
+      end
     end,
   },
 
@@ -92,17 +118,37 @@ require("lazy").setup({
       })
     end,
   },
+
+  -- Fuzzy Finder
+  {
+    'nvim-telescope/telescope.nvim', tag = '0.1.8',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local builtin = require('telescope.builtin')
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find Files' })
+      vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Search Text' })
+    end
+  },
+
+  -- Auto-close brackets and HTML tags
+  { "windwp/nvim-autopairs", config = true },
+  { "windwp/nvim-ts-autotag", config = true },
+
+  -- Git integration
+  { "lewis6991/gitsigns.nvim", config = true },
+
+  -- Easy commenting (gcc to comment a line)
+  { "numToStr/Comment.nvim", config = true },
 })
 
--- =====================
--- Editor options
--- =====================
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.clipboard = "unnamedplus"
-vim.opt.termguicolors = true
+-- LSP Keybindings (Only active when an LSP is attached)
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)      -- Go to Definition
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)           -- Show documentation
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts) -- Smart Rename
+    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts) -- Fix/Refactor
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)     -- Find where used
+  end,
+})
