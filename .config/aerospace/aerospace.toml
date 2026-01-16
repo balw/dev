@@ -130,6 +130,7 @@ ctrl-8 = 'workspace 8'
 ctrl-9 = 'workspace 9'
 ctrl-t = 'workspace T'
 ctrl-n = 'workspace N'
+ctrl-e = 'workspace E'
 ctrl-z = 'workspace Z'
 # ctrl-a = 'workspace A' # In your config, you can drop workspace bindings that you don't need
 
@@ -145,6 +146,7 @@ alt-shift-8 = 'move-node-to-workspace 8'
 alt-shift-9 = 'move-node-to-workspace 9'
 alt-shift-t = 'move-node-to-workspace T'
 alt-shift-n = 'move-node-to-workspace N'
+alt-shift-e = 'move-node-to-workspace E'
 alt-shift-z = 'move-node-to-workspace Z'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
