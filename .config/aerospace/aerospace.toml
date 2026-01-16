@@ -130,6 +130,7 @@ ctrl-8 = 'workspace 8'
 ctrl-9 = 'workspace 9'
 ctrl-t = 'workspace T'
 ctrl-n = 'workspace N'
+ctrl-z = 'workspace Z'
 # ctrl-a = 'workspace A' # In your config, you can drop workspace bindings that you don't need
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
@@ -144,6 +145,7 @@ alt-shift-8 = 'move-node-to-workspace 8'
 alt-shift-9 = 'move-node-to-workspace 9'
 alt-shift-t = 'move-node-to-workspace T'
 alt-shift-n = 'move-node-to-workspace N'
+alt-shift-z = 'move-node-to-workspace Z'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -189,6 +191,8 @@ shift-down = ['volume set 0', 'mode main']
 9 = 'secondary'
 T = 'secondary'
 N = 'main'
+E = 'main'
+Z = 'main'
 
 # Always open common apps in certain workspaces
 [[on-window-detected]]
@@ -235,3 +239,7 @@ run = ['layout floating', 'move-node-to-workspace 1']
 [[on-window-detected]]
 if.app-id = 'com.TickTick.task.mac'
 run = 'move-node-to-workspace T'
+
+[[on-window-detected]]
+if.app-id = 'us.zoom.xos'
+run = 'move-node-to-workspace Z'
