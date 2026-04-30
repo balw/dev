@@ -33,6 +33,7 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 alias ls='ls --color'
 alias ll='ls -la --color'
 alias c="clear"
+alias pwdc='printf "%s" $(pwd) | pbcopy'
 
 # Opencode
 export OPENCODE_CONFIG_CONTENT='{"$schema": "https://opencode.ai/config.json","share": "disabled", "enabled_providers": ["google-vertex", "google-vertex-anthropic", "github-copilot"]}'
