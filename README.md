@@ -34,6 +34,7 @@ Both take `--dry` to show what they would do without doing it.
 | AeroSpace | `installs/aerospace` | `.config/aerospace/` |
 | Claude Code | `installs/claude-code` | `claude/settings.json` → `~/.claude/settings.json` |
 | herdr | `installs/herdr` | `herdr/config.toml` → `~/.config/herdr/config.toml` |
+| rtk | `installs/rtk` | — (set up by `update-configs`) |
 | Plannotator | `skills/vendor/plannotator` | — |
 | fnm, Composer, Obsidian, Raycast, Nerd Font | `installs/*` | — |
 
@@ -45,6 +46,14 @@ Edit files in this repo, then run `./update-configs`. Don't edit the copies in `
 - **New config folder:** add it under `.config/` and it gets copied automatically.
 
 `update-configs` replaces each folder in `~/.config` that has a matching folder in `.config/`, so anything not in the repo is lost.
+
+## Claude Code and rtk
+
+[rtk](https://github.com/rtk-ai/rtk) cuts the tokens Claude spends on Bash commands by rewriting them (e.g. `git status` → `rtk git status`) to return shorter output.
+
+`update-configs` runs `rtk init -g --auto-patch`, which adds a hook to `~/.claude/settings.json` and writes `~/.claude/RTK.md` (referenced from `~/.claude/CLAUDE.md`). Restart Claude Code afterwards. `rtk gain` shows how many tokens it has saved.
+
+It only affects Bash commands, not Claude's built-in Read, Grep and Glob tools.
 
 ## Claude Code skills
 
@@ -59,6 +68,6 @@ Skills live in `skills/`:
 
 `update-configs` copies `claude/settings.json` to `~/.claude/settings.json`, then runs `herdr integration install claude`. That adds a hook so herdr can track Claude sessions running in its panes.
 
-The hook isn't stored in `claude/settings.json` because it contains a path specific to the machine. It's added back every time `update-configs` runs, so your live `settings.json` will have one more entry than the repo copy.
+The hook isn't stored in `claude/settings.json` because it contains a path specific to the machine. It's added back every time `update-configs` runs, along with rtk's hook, so your live `settings.json` will have more entries than the repo copy.
 
 If you change a setting inside Claude Code (e.g. with `/config`), copy it into `claude/settings.json` too, or the next `update-configs` will undo it.

@@ -14,6 +14,7 @@ Personal macOS dev-environment dotfiles. The repo lives at `~/dev` (`.zshrc` har
   - `claude/settings.json` → `~/.claude/settings.json`
   - each folder in `skills/custom/` → `~/.claude/skills/<name>` (replaces that skill folder only)
   - `herdr/config.toml` → `$XDG_CONFIG_HOME/herdr/config.toml`, then `herdr integration install claude` (if herdr is installed)
+  - `rtk init -g --auto-patch` (if rtk is installed): adds rtk's Bash hook to `~/.claude/settings.json` and writes `~/.claude/RTK.md` + an `@RTK.md` line in `~/.claude/CLAUDE.md`
 - `.config/` — the configs themselves: zsh, starship, tmux, ghostty, aerospace.
 - `claude/` — Claude Code user config. Kept outside `.config/` because Claude Code reads `~/.claude`, and `update-configs` would otherwise copy it to `~/.config/claude`. Only copy specific files into `~/.claude` — never replace the whole directory, it holds sessions, history and credentials.
 - `herdr/` — herdr (terminal agent multiplexer) config. Kept outside `.config/` because `~/.config/herdr` also holds sockets, logs and session snapshots that a directory replace would wipe.
@@ -30,6 +31,7 @@ Personal macOS dev-environment dotfiles. The repo lives at `~/dev` (`.zshrc` har
 - New config directory: put it in `.config/<name>/` and `update-configs` picks it up automatically. A single top-level file needs its own `copy_file` line.
 - Scripts must work on a fresh machine (no `~/.config`, Homebrew not on `PATH` yet). Create directories before copying into them and quote every path.
 - Don't commit herdr's Claude hook to `claude/settings.json` — it contains an absolute path to `~/.claude/hooks/herdr-agent-state.sh` (a herdr-managed script). `update-configs` re-adds it via `herdr integration install claude`, which is idempotent.
+- Same for rtk's hook: don't commit it to `claude/settings.json` or commit `RTK.md`; `rtk init -g --auto-patch` regenerates both and is idempotent.
 - Run `install-pkgs` before `update-configs` on a new machine so herdr exists when the integration step runs.
 - Keep shell scripts in bash and route side effects through `execute` so `--dry` stays accurate.
 - Theme is Catppuccin Mocha everywhere (tmux, ghostty). Font is BlexMono Nerd Font.

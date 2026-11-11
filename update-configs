@@ -79,3 +79,8 @@ copy_file "$script_dir/herdr/config.toml" "$XDG_CONFIG_HOME/herdr/config.toml"
 if command -v herdr >/dev/null 2>&1; then
     execute herdr integration install claude
 fi
+
+# Adds rtk's Bash PreToolUse hook to ~/.claude/settings.json and writes ~/.claude/RTK.md
+if command -v rtk >/dev/null 2>&1; then
+    execute rtk init -g --auto-patch </dev/null
+fi
