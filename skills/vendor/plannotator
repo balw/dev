@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Installs the plannotator binary to ~/.local/bin and its skills to ~/.claude/skills.
+# Rerun to update to the latest release.
+curl -fsSL https://plannotator.ai/install.sh | bash -s -- --non-interactive

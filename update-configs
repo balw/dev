@@ -67,6 +67,10 @@ copy_dir .config "$XDG_CONFIG_HOME"
 execute mkdir -p "$HOME/.claude"
 copy_file "$script_dir/claude/settings.json" "$HOME/.claude/settings.json"
 
+# Replaces only the skill folders that exist in skills/custom; vendor skills are left alone
+execute mkdir -p "$HOME/.claude/skills"
+copy_dir skills/custom "$HOME/.claude/skills"
+
 # herdr's config dir also holds sockets, logs and sessions, so copy only the config file
 execute mkdir -p "$XDG_CONFIG_HOME/herdr"
 copy_file "$script_dir/herdr/config.toml" "$XDG_CONFIG_HOME/herdr/config.toml"

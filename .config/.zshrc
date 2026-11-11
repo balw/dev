@@ -3,6 +3,9 @@ if [[ -f "/opt/homebrew/bin/brew" ]] then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# user-installed binaries (e.g. plannotator)
+export PATH="$HOME/.local/bin:$PATH"
+
 eval "$(starship init zsh)"
 eval "$(fnm env --use-on-cd)"
 
@@ -23,6 +26,7 @@ zinit light zsh-users/zsh-autosuggestions
 
 # Load completions
 setopt globdots # match hidden files/dirs
+fpath=("$HOME/.docker/completions" $fpath) # Docker CLI completions
 autoload -Uz compinit && compinit
 
 #Completion styling
