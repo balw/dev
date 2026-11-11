@@ -11,12 +11,15 @@ Personal macOS dev-environment dotfiles. The repo lives at `~/dev` (`.zshrc` har
   - `.config/.zshrc` → `~/.zshrc`
   - `.config/starship.toml` → `$XDG_CONFIG_HOME/starship.toml`
   - every directory in `.config/` → `$XDG_CONFIG_HOME/<dir>`, **replacing** the existing directory (`rm -rf` then `cp -r`)
+  - `claude/settings.json` → `~/.claude/settings.json`
 - `.config/` — the configs themselves: zsh, starship, tmux, ghostty, aerospace.
+- `claude/` — Claude Code user config. Kept outside `.config/` because Claude Code reads `~/.claude`, and `update-configs` would otherwise copy it to `~/.config/claude`. Only copy specific files into `~/.claude` — never replace the whole directory, it holds sessions, history and credentials.
 - `zinit/` — zinit plugin manager clone, created by `.zshrc` on first shell start. Gitignored; don't edit.
 
 ## Conventions
 
 - The repo is the source of truth. Edit files here and run `update-configs`; never edit `~/.config` directly.
+- Claude Code rewrites `~/.claude/settings.json` itself when settings change in-app (e.g. `/config`). Copy those changes back into `claude/settings.json` before running `update-configs`, or they get overwritten.
 - New tool: add `installs/<name>` with `#!/usr/bin/env bash` and `chmod +x` it, or `install-pkgs` will skip it.
 - New config directory: put it in `.config/<name>/` and `update-configs` picks it up automatically. A single top-level file needs its own `copy_file` line.
 - Scripts must work on a fresh machine (no `~/.config`, Homebrew not on `PATH` yet). Create directories before copying into them and quote every path.

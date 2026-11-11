@@ -62,3 +62,7 @@ copy_file "$script_dir/.config/.zshrc" "$HOME/.zshrc"
 copy_file "$script_dir/.config/starship.toml" "$XDG_CONFIG_HOME/starship.toml"
 
 copy_dir .config "$XDG_CONFIG_HOME"
+
+# Claude Code reads ~/.claude, not $XDG_CONFIG_HOME
+execute mkdir -p "$HOME/.claude"
+copy_file "$script_dir/claude/settings.json" "$HOME/.claude/settings.json"
