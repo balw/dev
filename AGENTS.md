@@ -12,11 +12,17 @@ Personal macOS dev-environment dotfiles. The repo lives at `~/dev` (`.zshrc` har
   - `.config/starship.toml` → `$XDG_CONFIG_HOME/starship.toml`
   - every directory in `.config/` → `$XDG_CONFIG_HOME/<dir>`, **replacing** the existing directory (`rm -rf` then `cp -r`)
   - `claude/settings.json` → `~/.claude/settings.json`
+  - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`, `agents/AGENTS.md` → `~/.claude/AGENTS.md`, `claude/agents/*.md` → `~/.claude/agents/`
   - each folder in `skills/custom/` → `~/.claude/skills/<name>` (replaces that skill folder only)
-  - `herdr/config.toml` → `$XDG_CONFIG_HOME/herdr/config.toml`, then `herdr integration install claude` (if herdr is installed)
-  - `rtk init -g --auto-patch` (if rtk is installed): adds rtk's Bash hook to `~/.claude/settings.json` and writes `~/.claude/RTK.md` + an `@RTK.md` line in `~/.claude/CLAUDE.md`
+  - `opencode/opencode.json`, `agents/AGENTS.md` and `opencode/agents/*.md` → `$XDG_CONFIG_HOME/opencode/`
+  - `herdr/config.toml` → `$XDG_CONFIG_HOME/herdr/config.toml`, then `herdr integration install claude` and `opencode` (if herdr is installed)
+  - `rtk init -g --auto-patch` and `rtk init -g --opencode --auto-patch` (if rtk is installed): adds rtk's Bash hook to `~/.claude/settings.json`, writes `~/.claude/RTK.md`, and installs rtk's opencode plugin
 - `.config/` — the configs themselves: zsh, starship, tmux, ghostty, aerospace.
 - `claude/` — Claude Code user config. Kept outside `.config/` because Claude Code reads `~/.claude`, and `update-configs` would otherwise copy it to `~/.config/claude`. Only copy specific files into `~/.claude` — never replace the whole directory, it holds sessions, history and credentials.
+- `agents/AGENTS.md` — my **global** instructions for coding agents, shared by Claude Code and opencode. Not to be confused with this file, which only describes this repo. Keep it tool-neutral; tool-specific setup belongs in `claude/` or `opencode/`.
+- `claude/CLAUDE.md` — just `@AGENTS.md` and `@RTK.md`. Claude Code only reads `~/.claude/CLAUDE.md` globally, so this imports the shared file. Keep the `@RTK.md` line.
+- `claude/agents/`, `opencode/agents/` — subagents per tool (different frontmatter formats). Keep the instruction body of agents that exist in both identical.
+- `opencode/` — opencode config. Only specific files are copied; `~/.config/opencode` also holds plugins and node_modules.
 - `herdr/` — herdr (terminal agent multiplexer) config. Kept outside `.config/` because `~/.config/herdr` also holds sockets, logs and session snapshots that a directory replace would wipe.
 - `skills/custom/` — my own Claude Code skills, one folder per skill with a `SKILL.md`.
 - `skills/vendor/` — one executable script per third-party skill that runs its upstream installer (e.g. `plannotator`). Don't copy vendor skill files into the repo; they're owned and updated by their installer.

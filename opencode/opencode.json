@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["~/.claude/RTK.md"],
+  "agent": {
+    "explore": {
+      "model": "openai/gpt-6-luna",
+      "variant": "high"
+    }
+  },
+  "plugin": ["@plannotator/opencode@latest"]
+}

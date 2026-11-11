@@ -66,10 +66,25 @@ copy_dir .config "$XDG_CONFIG_HOME"
 # Claude Code reads ~/.claude, not $XDG_CONFIG_HOME
 execute mkdir -p "$HOME/.claude"
 copy_file "$script_dir/claude/settings.json" "$HOME/.claude/settings.json"
+copy_file "$script_dir/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+copy_file "$script_dir/agents/AGENTS.md" "$HOME/.claude/AGENTS.md"
+
+execute mkdir -p "$HOME/.claude/agents"
+for agent in "$script_dir"/claude/agents/*.md; do
+    copy_file "$agent" "$HOME/.claude/agents/$(basename "$agent")"
+done
 
 # Replaces only the skill folders that exist in skills/custom; vendor skills are left alone
 execute mkdir -p "$HOME/.claude/skills"
 copy_dir skills/custom "$HOME/.claude/skills"
+
+# opencode's config dir also holds plugins and node_modules, so copy only tracked files
+execute mkdir -p "$XDG_CONFIG_HOME/opencode/agents"
+copy_file "$script_dir/opencode/opencode.json" "$XDG_CONFIG_HOME/opencode/opencode.json"
+copy_file "$script_dir/agents/AGENTS.md" "$XDG_CONFIG_HOME/opencode/AGENTS.md"
+for agent in "$script_dir"/opencode/agents/*.md; do
+    copy_file "$agent" "$XDG_CONFIG_HOME/opencode/agents/$(basename "$agent")"
+done
 
 # herdr's config dir also holds sockets, logs and sessions, so copy only the config file
 execute mkdir -p "$XDG_CONFIG_HOME/herdr"
@@ -78,9 +93,12 @@ copy_file "$script_dir/herdr/config.toml" "$XDG_CONFIG_HOME/herdr/config.toml"
 # Merges herdr's SessionStart hook into ~/.claude/settings.json, so it must run after the copy above
 if command -v herdr >/dev/null 2>&1; then
     execute herdr integration install claude
+    execute herdr integration install opencode
 fi
 
-# Adds rtk's Bash PreToolUse hook to ~/.claude/settings.json and writes ~/.claude/RTK.md
+# Adds rtk's Bash PreToolUse hook to ~/.claude/settings.json and writes ~/.claude/RTK.md.
+# --opencode only installs the opencode plugin, so it needs its own call.
 if command -v rtk >/dev/null 2>&1; then
     execute rtk init -g --auto-patch </dev/null
+    execute rtk init -g --opencode --auto-patch </dev/null
 fi
