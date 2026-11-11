@@ -4,16 +4,8 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 filter=""
 dry="0"
 
-cd $script_dir
+cd "$script_dir"
 scripts=$(find ./installs -maxdepth 1 -mindepth 1 -perm -111 -type f)
-
-# Check if Homebrew is installed, install if not
-if ! command -v brew >/dev/null 2>&1; then
-	echo "Homebrew not found. Installing Homebrew..."
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else
-	echo "Homebrew is already installed."
-fi
 
 while [[ $# > 0 ]]; do
     if [[ "$1" == "--dry" ]]; then
@@ -41,6 +33,20 @@ execute() {
     "$@"
 }
 
+# Check if Homebrew is installed, install if not
+if ! command -v brew >/dev/null 2>&1; then
+	echo "Homebrew not found. Installing Homebrew..."
+	execute /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	# A fresh install is not on PATH yet, so the install scripts below can't find brew
+	if [[ -x /opt/homebrew/bin/brew ]]; then
+		eval "$(/opt/homebrew/bin/brew shellenv)"
+	elif [[ -x /usr/local/bin/brew ]]; then
+		eval "$(/usr/local/bin/brew shellenv)"
+	fi
+else
+	echo "Homebrew is already installed."
+fi
+
 log "run: filter=$filter"
 
 for script in $scripts; do
@@ -49,5 +55,5 @@ for script in $scripts; do
         continue
     fi
     log "running script: $script"
-    execute ./$script
+    execute "$script"
 done

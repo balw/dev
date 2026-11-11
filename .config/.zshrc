@@ -1,10 +1,10 @@
-eval "$(starship init zsh)"
-eval "$(fnm env --use-on-cd)"
-
-# brew paths
+# brew paths (must come first so starship/fnm are on PATH)
 if [[ -f "/opt/homebrew/bin/brew" ]] then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
+
+eval "$(starship init zsh)"
+eval "$(fnm env --use-on-cd)"
 
 # Set the directory we want to store zinit and plugins
 ZINIT_HOME="${HOME}/dev/zinit/zinit.git"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-script_dir="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 dry="0"
 
 if [ -z "$XDG_CONFIG_HOME" ]; then
@@ -35,15 +35,15 @@ execute() {
 
 log "--------- dev-env ---------"
 
-cd $script_dir
+cd "$script_dir"
 copy_dir() {
-    pushd $1 >/dev/null
+    pushd "$1" >/dev/null
     to=$2
 
     dirs=$(find . -maxdepth 1 -mindepth 1 -type d)
     for dir in $dirs; do
-        execute rm -rf $to/$dir
-        execute cp -r $dir $to/$dir
+        execute rm -rf "$to/$dir"
+        execute cp -r "$dir" "$to/$dir"
     done
     popd >/dev/null
 }
@@ -51,11 +51,14 @@ copy_dir() {
 copy_file() {
     from=$1
     to=$2
-    execute rm $to
-    execute cp $from $to
+    execute rm -f "$to"
+    execute cp "$from" "$to"
 }
 
-copy_file $script_dir/.config/.zshrc $HOME/.zshrc
-copy_file $script_dir/.config/starship.toml $XDG_CONFIG_HOME/starship.toml
+# ~/.config does not exist on a fresh machine
+execute mkdir -p "$XDG_CONFIG_HOME"
 
-copy_dir .config $XDG_CONFIG_HOME
+copy_file "$script_dir/.config/.zshrc" "$HOME/.zshrc"
+copy_file "$script_dir/.config/starship.toml" "$XDG_CONFIG_HOME/starship.toml"
+
+copy_dir .config "$XDG_CONFIG_HOME"

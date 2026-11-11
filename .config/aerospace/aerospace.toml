@@ -82,7 +82,7 @@ outer.right = 0
 #                   keypadMinus, keypadMultiply, keypadPlus
 # - Arrows.         left, down, up, right
 
-# All possible modifiers: cmd, alt, alt, shift
+# All possible modifiers: cmd, alt, ctrl, shift
 
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
